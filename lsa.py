@@ -12,23 +12,31 @@ for l in list:
         if len(reuters.words(l))>500:
             train.append(l)
 
-for t in train:
-    summ=[]
-    k=0
-    #corpus = [dictionary.doc2bow(text) for text in texts]
-    dictionary = corpora.Dictionary([w for w in reuters.sents(t)])
-    corpus = [dictionary.doc2bow(w) for w in reuters.sents(t)]
-    matrix = matutils.corpus2csc(corpus)
-    #print matrix
-    u,sigma,vt = sparse.linalg.svds(matrix)
-    (k,l)= vt.shape
-    while k>=1:
-        if reuters.sents(t)[vt[k-1].argmax()] not in summ:
-            summ.append(reuters.sents(t)[vt[k-1].argmax()])
-        k-=1
-    v=[]
-    for s in summ:
-        v.append(" ".join(s))
-    summ="".join(v)
-    print summ
-    print
+
+def condensify(train):
+    """
+    Takes input either a string or a list of string
+    Returns a list of all summaries;
+    For a string returns a list with singleton document
+    """
+    if isinstance(train,string):
+        train = [train]
+    for t in train:
+        summ=[]
+        k=0
+        #corpus = [dictionary.doc2bow(text) for text in texts]
+        dictionary = corpora.Dictionary([w for w in reuters.sents(t)])
+        corpus = [dictionary.doc2bow(w) for w in reuters.sents(t)]
+        matrix = matutils.corpus2csc(corpus)
+        #print matrix
+        u,sigma,vt = sparse.linalg.svds(matrix)
+        (k,l)= vt.shape
+        while k>=1:
+            if reuters.sents(t)[vt[k-1].argmax()] not in summ:
+                summ.append(reuters.sents(t)[vt[k-1].argmax()])
+            k-=1
+        v=[]
+        for s in summ:
+            v.append(" ".join(s))
+        summ = "".join(v)
+        return (summ)
