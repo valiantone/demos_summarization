@@ -19,6 +19,7 @@ def condensify(train):
     Returns a list of all summaries;
     For a string returns a list with singleton document
     """
+    summ_list = []
     if isinstance(train,string):
         train = [train]
     for t in train:
@@ -39,4 +40,5 @@ def condensify(train):
         for s in summ:
             v.append(" ".join(s))
         summ = "".join(v)
-        return (summ)
+        summ_list.append(summ)
+    return (summ_list)
